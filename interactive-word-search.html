@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Word Search</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fffbe6;
+            padding: 30px;
+            text-align: center;
+        }
+        h2 {
+            color: #db3a34;
+        }
+        .wordsearch-container {
+            display: inline-block;
+            margin: 20px auto;
+        }
+        #words {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        canvas {
+            border: 2px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Find the Hidden Words!</h2>
+    <div id="words"></div>
+    <div class="wordsearch-container">
+        <canvas id="puzzleCanvas" width="480" height="480"></canvas>
+    </div>
+
+    <script>
+        const words = ['rabbit', 'fox', 'dragon', 'lechon', 'veggie'];
+        const gridSize = 12;
+        const cellSize = 40;
+        const canvas = document.getElementById('puzzleCanvas');
+        const ctx = canvas.getContext('2d');
+        const grid = Array.from({length: gridSize}, () => Array(gridSize).fill(''));
+        const placedWords = [];
+
+        function randomLetter() {
+            return String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '20px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            for (let r = 0; r < gridSize; r++) {
+                for (let c = 0; c < gridSize; c++) {
+                    ctx.strokeStyle = '#ccc';
+                    ctx.strokeRect(c * cellSize, r * cellSize, cellSize, cellSize);
+                    ctx.fillStyle = '#333';
+                    ctx.fillText(grid[r][c], c * cellSize + cellSize / 2, r * cellSize + cellSize / 2);
+                }
+            }
+        }
+
+        function placeWord(word) {
+            const directions = ['H', 'V'];
+            for (let attempt = 0; attempt < 100; attempt++) {
+                const dir = directions[Math.floor(Math.random() * directions.length)];
+                let row = Math.floor(Math.random() * gridSize);
+                let col = Math.floor(Math.random() * gridSize);
+
+                if (dir === 'H' && col + word.length <= gridSize) {
+                    let fits = true;
+                    for (let i = 0; i < word.length; i++) {
+                        if (grid[row][col + i] && grid[row][col + i] !== word[i].toUpperCase()) {
+                            fits = false;
+                            break;
+                        }
+                    }
+                    if (fits) {
+                        for (let i = 0; i < word.length; i++) {
+                            grid[row][col + i] = word[i].toUpperCase();
+                        }
+                        placedWords.push({ word, row, col, dir });
+                        return;
+                    }
+                } else if (dir === 'V' && row + word.length <= gridSize) {
+                    let fits = true;
+                    for (let i = 0; i < word.length; i++) {
+                        if (grid[row + i][col] && grid[row + i][col] !== word[i].toUpperCase()) {
+                            fits = false;
+                            break;
+                        }
+                    }
+                    if (fits) {
+                        for (let i = 0; i < word.length; i++) {
+                            grid[row + i][col] = word[i].toUpperCase();
+                        }
+                        placedWords.push({ word, row, col, dir });
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Place all words
+        words.forEach(word => placeWord(word));
+
+        // Fill in empty spaces
+        for (let r = 0; r < gridSize; r++) {
+            for (let c = 0; c < gridSize; c++) {
+                if (!grid[r][c]) grid[r][c] = randomLetter();
+            }
+        }
+
+        drawGrid();
+
+        // Display word list
+        document.getElementById('words').innerHTML = '<strong>Words to Find:</strong><br>' + words.join(', ');
+
+        // Click tracking for highlight (basic feature)
+        canvas.addEventListener('click', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const col = Math.floor(x / cellSize);
+            const row = Math.floor(y / cellSize);
+            ctx.fillStyle = '#ffe066';
+            ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+            ctx.fillStyle = '#000';
+            ctx.fillText(grid[row][col], col * cellSize + cellSize / 2, row * cellSize + cellSize / 2);
+        });
+    </script>
+</body>
+</html>
