@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Search: Test Puzzle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #puzzle {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        canvas {
+            border: 2px solid #d63384;
+        }
+    </style>
+</head>
+<body>
+    <h2>Find the Words!</h2>
+    <p>rabbit, fox, dragon, lechon, veggie</p>
+    <div id="puzzle"></div>
+
+    <script src="https://cdn.jsdelivr.net/gh/loarabia/wordfind@master/wordfind.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/loarabia/wordfind@master/wordfindgame.js"></script>
+    <script>
+        var words = ['rabbit', 'fox', 'dragon', 'lechon', 'veggie'];
+        var gamePuzzle = wordfindgame.create(document.getElementById('puzzle'), {
+            height: 12,
+            width: 12,
+            fillBlanks: true
+        }, words);
+    </script>
+</body>
+</html>
