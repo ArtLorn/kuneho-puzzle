@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find the Words Puzzle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 20px;
+            text-align: center;
+        }
+        #puzzle {
+            display: inline-block;
+            margin: 20px auto;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        td {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        td.found {
+            background-color: #a3e635;
+            color: #000;
+        }
+        #words {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Find the Words!</h2>
+    <div id="puzzle"></div>
+    <div id="words"></div>
+
+    <script>
+        const words = ['rabbit', 'fox', 'dragon', 'lechon', 'veggie'];
+        const gridSize = 12;
+        const puzzle = document.getElementById('puzzle');
+        const wordsDiv = document.getElementById('words');
+
+        // Display word list
+        wordsDiv.innerHTML = "<strong>Words to Find:</strong><br>" + words.join(", ");
+
+        // Initialize grid
+        const grid = Array.from({length: gridSize}, () => Array(gridSize).fill(''));
+
+        function placeWord(word) {
+            const dir = Math.random() < 0.5 ? 'H' : 'V';
+            let row, col;
+
+            for (let attempt = 0; attempt < 100; attempt++) {
+                if (dir === 'H') {
+                    row = Math.floor(Math.random() * gridSize);
+                    col = Math.floor(Math.random() * (gridSize - word.length));
+                } else {
+                    row = Math.floor(Math.random() * (gridSize - word.length));
+                    col = Math.floor(Math.random() * gridSize);
+                }
+
+                let fits = true;
+                for (let i = 0; i < word.length; i++) {
+                    const r = dir === 'H' ? row : row + i;
+                    const c = dir === 'H' ? col + i : col;
+                    if (grid[r][c] && grid[r][c] !== word[i]) {
+                        fits = false;
+                        break;
+                    }
+                }
+
+                if (fits) {
+                    for (let i = 0; i < word.length; i++) {
+                        const r = dir === 'H' ? row : row + i;
+                        const c = dir === 'H' ? col + i : col;
+                        grid[r][c] = word[i];
+                    }
+                    return;
+                }
+            }
+        }
+
+        // Place words
+        words.forEach(placeWord);
+
+        // Fill blanks
+        for (let r = 0; r < gridSize; r++) {
+            for (let c = 0; c < gridSize; c++) {
+                if (!grid[r][c]) {
+                    grid[r][c] = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                }
+            }
+        }
+
+        // Render grid
+        const table = document.createElement('table');
+        for (let r = 0; r < gridSize; r++) {
+            const row = document.createElement('tr');
+            for (let c = 0; c < gridSize; c++) {
+                const cell = document.createElement('td');
+                cell.textContent = grid[r][c];
+                row.appendChild(cell);
+            }
+            table.appendChild(row);
+        }
+        puzzle.appendChild(table);
+    </script>
+</body>
+</html>
