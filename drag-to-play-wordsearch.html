@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ay, Kuneho! Word Search</title>
+  <script src="https://cdn.jsdelivr.net/gh/aaronbieber/wordfind@master/wordfind.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/aaronbieber/wordfind@master/wordfindgame.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fffbe6;
+      color: #333;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #e74c3c;
+    }
+    #puzzle, #words {
+      margin: 0 auto;
+    }
+    #puzzle {
+      margin-top: 20px;
+    }
+    .wordFound {
+      text-decoration: line-through;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ay, Kuneho! Word Search</h1>
+  <p>Find the hidden words: Rabbit, Fox, Dragon, Lechon, Veggie</p>
+
+  <div id="puzzle"></div>
+  <div id="words"></div>
+
+  <script>
+    const words = ['rabbit', 'fox', 'dragon', 'lechon', 'veggie'];
+    const gamePuzzle = wordfindgame.create({
+      puzzleGridElement: document.getElementById('puzzle'),
+      words: words,
+      wordListElement: document.getElementById('words'),
+    });
+
+    // Resize the puzzle if it overflows
+    const puzzleContainer = document.getElementById('puzzle');
+    puzzleContainer.style.overflowX = 'auto';
+  </script>
+</body>
+</html>
